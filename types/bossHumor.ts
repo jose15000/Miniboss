@@ -1,0 +1,1 @@
+export type BossHumor = "neutral" | "passive-aggressive" | "angry"
