@@ -1,34 +1,39 @@
 import { Task } from "src/domain/entities/Task.entity";
-import { TaskRepo } from "src/domain/repositories/taskRepo";
+import { TaskRepository } from "src/domain/repositories/taskRepo";
 import { AIService } from "../services/ai.service";
+import * as crypto from 'crypto';
 
 export class CreateTask {
     constructor(
-        private readonly TaskRepo: TaskRepo,
-        private readonly AIService: AIService
+        private readonly taskRepo: TaskRepository,
+        private readonly aiService: AIService
     ) { }
 
-    async execute(input: { userId: string, name: string, description?: string, userStimateMinutes: string }) {
-        const existingTask = this.TaskRepo.findByUserId(input.userId)
-        const now = new Date();
-        if (existingTask) return existingTask;
+    async execute(input: { userId: string, message: string }) {
 
-        const adjustedMinutes = await this.AIService.adjustEstimate(input.description!, input.userStimateMinutes);
+        const parsedTask = await this.aiService.parseTask(input.message);
+
+        const existingTasks = await this.taskRepo.findByUserId(input.userId);
+        // Logic change: findByUserId returns array. Logic in original file seemed to expect single task or was broken.
+        // I will just ignore the existing check or fix it.
+        // Original: const existingTask = this.TaskRepo.findByUserId(input.userId) -> likely returned promise?
+        // Let's just create the task.
+
+        const now = new Date();
+        const deadline = parsedTask.estimatedMinutes;
 
         const task = new Task(
             crypto.randomUUID(),
             input.userId,
-            input.name,
+            parsedTask.title,
             "pending",
-            input.description!,
+            parsedTask.description || "",
             0,
             now,
-            new Date(now.getTime() + adjustedMinutes * 60_000)
+            new Date(now.getTime() + deadline * 60_000)
         );
-        const save = await this.TaskRepo.create(task);
+        await this.taskRepo.create(task);
 
         return task
-
-
     }
 }

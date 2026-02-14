@@ -1,12 +1,12 @@
-import { MinibossRepo } from "src/domain/repositories/minibossRepo";
-import { TaskRepo } from "src/domain/repositories/taskRepo";
-import { UserRepo } from "src/domain/repositories/userRepo";
+import { MinibossRepository } from "src/domain/repositories/minibossRepo";
+import { TaskRepository } from "src/domain/repositories/taskRepo";
+import { UserRepository } from "src/domain/repositories/userRepo";
 
 export class UserIgnoreTask {
     constructor(
-        private userRepo: UserRepo,
-        private taskRepo: TaskRepo,
-        private bossRepo: MinibossRepo
+        private userRepo: UserRepository,
+        private taskRepo: TaskRepository,
+        private bossRepo: MinibossRepository
     ) { }
 
     async execute(input: { taskId: string, userId: string }) {

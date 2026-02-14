@@ -3,7 +3,7 @@ import { BossHumor } from "types/bossHumor";
 export class Miniboss {
     constructor(
         public readonly id: string,
-        userId: string,
+        public userId: string,
         public humor: BossHumor = "neutral",
         public patience: number = 10,
         public timesIgnored: number = 0,

@@ -1,8 +1,8 @@
 import { User } from "../entities/user.entity";
 
-export interface UserRepo {
+export interface UserRepository {
     save(user: User): Promise<void>,
     findById(userId: string): Promise<User | null>,
-    findByPhone(phone: string): Promise<string>,
+    findByPhone(phone: string): Promise<User | null>,
     update(user: User): Promise<void>,
 }

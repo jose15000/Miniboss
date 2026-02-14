@@ -1,8 +1,8 @@
-import { TaskRepo } from "src/domain/repositories/taskRepo";
+import { TaskRepository } from "src/domain/repositories/taskRepo";
 
 export class CompleteTask {
     constructor(
-        private TaskRepo: TaskRepo
+        private TaskRepo: TaskRepository
     ) { }
 
     async execute(input: { userId: string, taskId: string }) {
@@ -10,9 +10,13 @@ export class CompleteTask {
 
         const getTask = task.find(t => t.id === input.taskId)
 
-        const finish = getTask?.markAsDone()
+        if (!getTask) {
+            throw new Error("Task not found");
+        }
 
-        const save = this.TaskRepo.update(finish!);
+        getTask.markAsDone()
+
+        const save = await this.TaskRepo.update(getTask);
 
         return save;
     }

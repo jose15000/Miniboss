@@ -1,12 +1,13 @@
 import { User } from "src/domain/entities/user.entity";
-import { UserRepo } from "src/domain/repositories/userRepo";
+import { UserRepository } from "src/domain/repositories/userRepo";
+import * as crypto from 'crypto';
 
 export class CreateUser {
     constructor(
-        private readonly userRepo: UserRepo,
+        private readonly userRepo: UserRepository,
     ) { }
     async execute(input: { name: string, phone: string }) {
-        const existing = this.userRepo.findByPhone(input.phone);
+        const existing = await this.userRepo.findByPhone(input.phone);
 
         if (existing) return existing;
 

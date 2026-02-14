@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  number        String    @unique
+  email         String?
+  timesIgnoring Int       @default(0)
+  createdAt     DateTime  @default(now())
+  
+  tasks         Task[]
+  miniboss      Miniboss?
+
+  @@map("users")
+}
+
+model Task {
+  id           String   @id @default(uuid())
+  name         String
+  description  String?
+  status       String   @default("pending") // pending, done
+  timesIgnored Int      @default(0)
+  deadline     DateTime
+  createdAt    DateTime @default(now())
+  userId       String
+  
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("tasks")
+}
+
+model Miniboss {
+  id           String @id @default(uuid())
+  humor        String @default("neutral") // neutral, passive-aggressive, angry
+  patience     Int    @default(10)
+  timesIgnored Int    @default(0)
+  userId       String @unique
+  
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("miniboss")
+}

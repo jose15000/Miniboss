@@ -1,14 +1,10 @@
-import { BossHumor } from "types/bossHumor"
+import { GenerateConversation } from "types/generateConversation";
+import { GenerateThreatMessage } from "types/generateThreatMessage";
+import { UserIntent } from "types/intent";
+import { ParsedTask } from "types/parsedTask"
 
 export interface AIService {
-    adjustEstimate(
-        taskDescription: string,
-        userEstimatedMinutes: string,
-    ): Promise<number>
-
-    genereateMessage(
-        humor: BossHumor,
-        taskName: string,
-        minutesLate: number,
-    ): Promise<string>
+    parseTask(message: string): Promise<ParsedTask>;
+    detectIntent(message: string): Promise<UserIntent>
+    generateThreatMessage(input: GenerateThreatMessage): Promise<string>
 }
